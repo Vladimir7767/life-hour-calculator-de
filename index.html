@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Wert der Lebenszeit Rechner Online — Realer Stundenlohn Analysator</title>
+<meta name="description" content="Kostenloser interaktiver Rechner zur Analyse des realen Stundenwerts Ihres Lebens. Finden Sie Ihren wahren Lohn unter Berücksichtigung von Arbeitsweg und Routine heraus.">
+<style>
+:root{--primary:#2563eb;--primary-hover:#1d4ed8;--success:#16a34a;--danger:#dc2626;--bg:#f8fafc;--card-bg:#ffffff;--text:#0f172a;--text-muted:#64748b;--border:#e2e8f0}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{background:var(--bg);color:var(--text);padding:20px;display:flex;justify-content:center;align-items:center;min-height:100vh}
+.wrapper{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:24px;width:100%;max-width:480px;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05)}
+h1{font-size:22px;font-weight:700;margin-bottom:4px;text-align:center}
+.subtitle{font-size:14px;color:var(--text-muted);text-align:center;margin-bottom:20px}
+.live-meter{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:20px;text-align:center}
+.meter-label{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px}
+.bar-container{background:var(--border);border-radius:20px;height:12px;width:100%;overflow:hidden;position:relative}
+.bar-fill{background:var(--primary);width:50%;height:100%;transition:all 0.4s ease}
+.group{margin-bottom:16px}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text)}
+input[type="number"]{width:100%;padding:11px;border:1px solid var(--border);border-radius:10px;font-size:15px;background:#fff;color:var(--text);transition:border 0.2s}
+input[type="number"]:focus{border-color:var(--primary);outline:none}
+input[type="range"]{width:100%;margin:8px 0;cursor:pointer}
+.range-val{font-size:14px;font-weight:700;color:var(--primary);float:right}
+.calc-btn{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;margin-top:10px;box-shadow:0 4px 6px -1px rgba(37,99,235,0.2);transition:background 0.2s}
+.calc-btn:hover{background:var(--primary-hover)}
+.results{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:20px;display:none}
+.res-title{font-size:14px;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-align:center;text-transform:uppercase}
+.res-row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px dashed var(--border);align-items:center}
+.res-row:last-child{border-bottom:none}
+.res-val{font-weight:700;color:var(--primary);text-align:right;max-width:65%}
+.res-val.loss{color:var(--danger)}
+.ad{display:none;margin-top:15px;min-height:90px;text-align:center;justify-content:center;align-items:center;width:100%}
+.seo-text{font-size:12px;color:var(--text-muted);margin-top:24px;text-align:justify;line-height:1.4;border-top:1px solid var(--border);padding-top:16px;display:none}
+</style>
+</head>
+<body>
+<div class="wrapper">
+<h1>Wert Ihrer Lebensstunde</h1>
+<div class="subtitle">Analysator für den realen wirtschaftlichen Wert Ihrer Zeit</div>
+
+<div class="live-meter">
+<div class="meter-label">Zeitbewertung: <span id="live-preview-zone">Analyse...</span></div>
+<div class="bar-container"><div class="bar-fill" id="bar-fill"></div></div>
+</div>
+
+<div class="group">
+<label for="income">Monatliches Nettoeinkommen (€)</label>
+<input type="number" id="income" value="3500" min="1" max="1000000" oninput="updatePreview()">
+</div>
+
+<div class="group">
+<label for="work-hours">Arbeitsstunden pro Tag <span class="range-val" id="hours-val">8</span></label>
+<input type="range" id="work-hours" min="1" max="16" value="8" oninput="document.getElementById('hours-val').innerText=this.value; updatePreview();">
+</div>
+
+<div class="group">
+<label for="days-off">Freie Tage pro Monat <span class="range-val" id="days-val">8</span></label>
+<input type="range" id="days-off" min="0" max="15" value="8" oninput="document.getElementById('days-val').innerText=this.value; updatePreview();">
+</div>
+
+<div class="group">
+<label for="commute">Arbeitsweg (Hin- und Rückweg, Std./Tag) <span class="range-val" id="commute-val">2</span></label>
+<input type="range" id="commute" min="0" max="6" value="2" oninput="document.getElementById('commute-val').innerText=this.value; updatePreview();">
+</div>
+
+<div class="group">
+<label for="routine">Unbezahlte Vorbereitung & Routine (Std./Tag) <span class="range-val" id="routine-val">1</span></label>
+<input type="range" id="routine" min="0" max="4" value="1" oninput="document.getElementById('routine-val').innerText=this.value; updatePreview();">
+</div>
+
+<div class="group">
+<label for="waste">Zeitfresser (Social Media, Spiele, Std./Tag) <span class="range-val" id="waste-val">3</span></label>
+<input type="range" id="waste" min="0" max="10" value="3" oninput="document.getElementById('waste-val').innerText=this.value; updatePreview();">
+</div>
+
+<button class="calc-btn" onclick="calculateLifeHour()">Meinen Wert analysieren</button>
+
+<div class="results" id="results-box">
+<div class="res-title">Finanzielles & Philosophisches Fazit</div>
+<div class="res-row"><span>Gefühlter Stundenlohn:</span><span class="res-val" id="res-nominal">0 €</span></div>
+<div class="res-row"><span>REALER Stundenlohn:</span><span class="res-val" id="res-real">0 €</span></div>
+<div class="res-row"><span>Finanzieller Verlust durch Zeitfresser (Monatlich):</span><span class="res-val loss" id="res-loss">0 €</span></div>
+</div>
+
+<div id="ads" class="ad"><div id="container-e8c895e6c70ade8e4ef4a72354f42e97"></div></div>
+
+<div class="seo-text" id="seo-box">
+Unser fortschrittlicher Online-Rechner für den Lebensstundenlohn ermittelt den authentischen wirtschaftlichen Wert Ihrer persönlichen Zeit direkt in Ihrem Browser. Dieses reaktionsschnelle interaktive Skript analysiert Ihr monatliches Nettoeinkommen und zieht systematisch versteckte tägliche Zeitfresser wie den Arbeitsweg (Commute), unbezahlte Vorbereitungszeiten und reguläre geschäftliche Routinen ab. Der Algorithmus verdeutlicht die Kosten entgangener finanzieller Gelegenheiten und versteckter wirtschaftlicher Verluste, die durch alltägliche Gewohnheiten (Social Feeds, Videospiele, Streaming) entstehen. Jede mathematische Berechnung läuft zu 100 % lokal auf der Client-Ebene ab, um die Privatsphäre Ihrer Finanzdaten absolut zu schützen.
+</div>
+</div>
+<script>
+function updatePreview() {
+  const income = parseFloat(document.getElementById('income').value) || 0;
+  const workHours = parseInt(document.getElementById('work-hours').value) || 1;
+  const daysOff = parseInt(document.getElementById('days-off').value) || 0;
+  const commute = parseInt(document.getElementById('commute').value) || 0;
+  const routine = parseInt(document.getElementById('routine').value) || 0;
+  const waste = parseInt(document.getElementById('waste').value) || 0;
+
+  const totalDaysInMonth = 30.4375;
+  const workingDays = Math.max(1, totalDaysInMonth - daysOff);
+
+  const unearnedHours = commute + routine;
+  const totalRealWorkHoursPerDay = workHours + unearnedHours;
+
+  const nominalTotalHours = workingDays * workHours;
+  const realTotalHours = workingDays * totalRealWorkHoursPerDay;
+
+  const nominalHourlyRate = income / nominalTotalHours;
+  const realHourlyRate = income / realTotalHours;
+
+  let zone = "Moderat";
+  let color = "var(--primary)";
+  let pct = 50;
+
+  const efficiencyRatio = realHourlyRate / (nominalHourlyRate || 1);
+
+  if (efficiencyRatio >= 0.85 && waste <= 1) {
+    zone = "💎 Hoher Zeitwert";
+    color = "var(--success)";
+    pct = 85;
+  } else if (efficiencyRatio >= 0.65 && waste <= 3) {
+    zone = "⚠️ Optimal (Versteckte Verluste vorhanden)";
+    color = "var(--primary)";
+    pct = 60;
+  } else {
+    zone = "📉 Zeitentwertung (Hohe Verluste)";
+    color = "var(--danger)";
+    pct = 25;
+  }
+
+  const preview = document.getElementById('live-preview-zone');
+  preview.innerText = zone; 
+  preview.style.color = color;
+
+  const fill = document.getElementById('bar-fill');
+  fill.style.width = pct + '%'; 
+  fill.style.background = color;
+}
+
+window.onload = function() {
+  updatePreview();
+};
+
+function showAds() {
+  const c = document.getElementById('ads');
+  if (!window.adScriptLoaded) {
+    window.atOptions = {
+      'key': 'e8c895e6c70ade8e4ef4a72354f42e97',
+      'format': 'iframe',
+      'height': 90,
+      'width': 728,
+      'params': {}
+    };
+    var s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.async = !0;
+    s.src = ['https://', 'bagelstoppage.', 'com/', 'e8c895e6c70ade8e4ef4a72354f42e97/', 'invoke.js'].join('');
+    c.appendChild(s);
+    window.adScriptLoaded = !0;
+  }
+  c.style.display = 'flex';
+}
+
+function calculateLifeHour() {
+  const income = parseFloat(document.getElementById('income').value);
+  if (isNaN(income) || income <= 0) {
+    alert('Bitte geben Sie einen gültigen monatlichen Nettoeinkommensbetrag ein.');
+    return;
+  }
+
+  const workHours = parseInt(document.getElementById('work-hours').value);
+  const daysOff = parseInt(document.getElementById('days-off').value);
+  const commute = parseInt(document.getElementById('commute').value);
+  const routine = parseInt(document.getElementById('routine').value);
+  const waste = parseInt(document.getElementById('waste').value);
+
+  const totalDaysInMonth = 30.4375;
+  const workingDays = Math.max(1, totalDaysInMonth - daysOff);
+
+  const nominalTotalHours = workingDays * workHours;
+  const nominalHourlyRate = Math.round(income / nominalTotalHours);
+
+  const realTotalHours = workingDays * (workHours + commute + routine);
+  const realHourlyRate = Math.round(income / realTotalHours);
+
+  const monthlyWasteHours = totalDaysInMonth * waste;
+  const financialLoss = Math.round(monthlyWasteHours * realHourlyRate);
+
+  document.getElementById('res-nominal').innerText = nominalHourlyRate.toLocaleString('de-DE') + " €";
+  document.getElementById('res-real').innerText = realHourlyRate.toLocaleString('de-DE') + " €";
+  document.getElementById('res-loss').innerText = financialLoss.toLocaleString('de-DE') + " €";
+
+  document.getElementById('results-box').style.display = 'block';
+  document.getElementById('seo-box').style.display = 'block';
+  showAds();
+}
+</script>
+</body>
+</html>
